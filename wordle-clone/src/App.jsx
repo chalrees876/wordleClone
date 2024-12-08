@@ -1,6 +1,6 @@
 import './App.css'
 import Guesses from "./components/Guesses.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
 function App(props) {
 
@@ -32,16 +32,24 @@ function App(props) {
     }
 
     function checkGuess(guess) {
-        return guess === answer;
+        return guess === true;
     }
+
+    const guesses = useMemo(
+        () => Array.from({ length: 6 }, (_, i) => i),
+        []
+    )
 
   return (
     <>
-        <Guesses
+        {answer}
+        {guesses.map(i =>
+            <Guesses
             answer={answer}
         checkGuess={checkGuess}
         getRandomInt={getRandomInt}
-        updateWord={updateWord}/>
+        updateWord={updateWord}
+            key={i}/>)}
     </>
   )
 }

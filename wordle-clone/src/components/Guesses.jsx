@@ -1,9 +1,16 @@
-import {useState} from "react";
-
+import {useMemo, useState} from "react";
+import Letters from "./Letters.jsx"
 
 function Guesses(props) {
 
     const [guess, setGuess] = useState("");
+    const [guessNumber, setGuessNumber] = useState(0);
+    const [isCorrect, setCorrect] = useState(false);
+
+    const letters = useMemo(
+        () => Array.from({ length: 5 }, (_, i) => i),
+        []
+    )
 
     function handleChange() {
         setGuess(event.target.value);
@@ -11,6 +18,7 @@ function Guesses(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
+        setGuessNumber(guessNumber + 1);
         setCorrect(props.checkGuess(guess));
         if(props.checkGuess(guess)) {
             props.updateWord();
@@ -18,28 +26,18 @@ function Guesses(props) {
         setGuess("");
     }
 
-    const [isCorrect, setCorrect] = useState(false);
-
-    const correctTemplate = (
-        <div>
-            <h1>Congratulations! You solved the puzzle</h1>
-            <button type="button" onClick={() => setCorrect(false)}>Play Again?</button>
-        </div>
-    )
-
-    const incorrectTemplate = (
+    const startingTemplate = (
 
         <form className={"guess-container"} onSubmit={handleSubmit}>
-            <h1>{props.answer}</h1>
             <div>
-                <input type={"text"} maxLength="5" minLength="5" id="1" value={guess}  onChange={handleChange}></input>
+                {letters.map(i => <Letters key={i}/>)}
             </div>
         </form>
     )
 
     return (
         <>
-        {isCorrect ? correctTemplate : incorrectTemplate}
+            {startingTemplate}
         </>
     )
 }
