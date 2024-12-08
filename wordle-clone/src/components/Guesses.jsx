@@ -12,8 +12,10 @@ function Guesses(props) {
     function handleSubmit(event) {
         event.preventDefault();
         setCorrect(props.checkGuess(guess));
+        if(props.checkGuess(guess)) {
+            props.updateWord();
+        }
         setGuess("");
-        props.updateWord();
     }
 
     const [isCorrect, setCorrect] = useState(false);
@@ -26,7 +28,9 @@ function Guesses(props) {
     )
 
     const incorrectTemplate = (
+
         <form className={"guess-container"} onSubmit={handleSubmit}>
+            <h1>{props.answer}</h1>
             <div>
                 <input type={"text"} maxLength="5" minLength="5" id="1" value={guess}  onChange={handleChange}></input>
             </div>
