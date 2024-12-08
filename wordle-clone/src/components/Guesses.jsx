@@ -5,7 +5,6 @@ function Guesses(props) {
 
     const [guess, setGuess] = useState("");
     const [guessNumber, setGuessNumber] = useState(0);
-    const [isCorrect, setCorrect] = useState(false);
 
     const letters = useMemo(
         () => Array.from({ length: 5 }, (_, i) => i),
@@ -19,7 +18,6 @@ function Guesses(props) {
     function handleSubmit(event) {
         event.preventDefault();
         setGuessNumber(guessNumber + 1);
-        setCorrect(props.checkGuess(guess));
         if(props.checkGuess(guess)) {
             props.updateWord();
         }
