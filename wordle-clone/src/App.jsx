@@ -32,11 +32,12 @@ function App(props) {
     }
 
     function checkGuess(guess) {
-        return guess === true;
+        const guessToString = guess[0] + guess[1] + guess[2] + guess[3] + guess[4]
+        return guessToString === answer;
     }
 
     const guesses = useMemo(
-        () => Array.from({ length: 6 }, (_, i) => i),
+        () => Array.from({ length: 1 }, (_, i) => i),
         []
     )
 

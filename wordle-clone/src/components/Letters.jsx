@@ -1,25 +1,15 @@
-import Guesses from "./Guesses.jsx"
-import {useState} from "react";
-
 function Letters(props) {
 
-    const [letters, setLetters] = useState([]);
-    const [letter, setLetter] = useState("");
-    const [letterCount, setLetterCount] = useState(0);
-
-    function handleChange(event) {
-        const newLetter = event.target.value;
-        setLetter(newLetter);
-        setLetters((prevLetters) => [...prevLetters, newLetter]);
-        setLetterCount((prevCount) => prevCount + 1);
-        console.log("New letter: " + newLetter);
-        console.log("Letter count: " + letterCount + 1);
-        consol.log("Letters: " + letters);
+    function handleChange(event){
+        // eslint-disable-next-line react/prop-types
+        console.log("current index: " + props.letterIndex);
+        // eslint-disable-next-line react/prop-types
+        props.updateGuess(event.target.value, props.letterIndex)
     }
 
     return (
     <div className={"letter-container"}>
-        <input type={"text"} maxLength="1" minLength="1" value={letter} id={letterCount} onChange={handleChange}></input>
+        <input type={"text"} maxLength="1" minLength="1" id={props.letterIndex} onChange={handleChange}></input>
     </div>
 )
 }
