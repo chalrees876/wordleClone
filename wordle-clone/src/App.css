@@ -13,7 +13,6 @@ input[type=text] {
   font-size: 2.5em;
   text-align: center;
   margin: 10px 10px;
-  background-color: #4f4f4f;
 }
 
 input[type=text]:focus {
@@ -23,5 +22,17 @@ input[type=text]:focus {
 }
 .letter-container {
   display: inline;
+}
+
+.grey {
+  background-color: lightslategrey;
+}
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
 }
 

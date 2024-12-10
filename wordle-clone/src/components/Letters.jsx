@@ -1,15 +1,21 @@
+import {useEffect, useState} from "react";
+
 function Letters(props) {
 
     function handleChange(event){
-        // eslint-disable-next-line react/prop-types
-        console.log("current index: " + props.letterIndex);
-        // eslint-disable-next-line react/prop-types
-        props.updateGuess(event.target.value, props.letterIndex)
+            props.updateGuess(event.target.value, props.letterIndex);
+            props.updateReadOnly(props.letterIndex);
     }
 
     return (
     <div className={"letter-container"}>
-        <input type={"text"} maxLength="1" minLength="1" id={props.letterIndex} onChange={handleChange}></input>
+        <input type={"text"}
+               maxLength="1"
+               minLength="1"
+               id={props.letterIndex}
+               className={props.colors[props.letterIndex]}
+               onChange={handleChange}
+        readOnly={props.letterReadOnly[props.letterIndex]}></input>
     </div>
 )
 }
