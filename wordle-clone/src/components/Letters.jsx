@@ -1,22 +1,42 @@
-import {useEffect, useState} from "react";
 
 function Letters(props) {
 
     function handleChange(event){
-            props.updateGuess(event.target.value, props.letterIndex);
-            props.updateReadOnly(props.letterIndex);
+            console.log("handling change, props.id: " + props.id);
+            props.updateGuess(event.target.value, props.id);
+            props.updateNextElement(props.id);
     }
 
-    return (
-    <div className={"letter-container"}>
+    function isBackspace(event) {
+        if (event.key === 'Backspace') {
+            props.backspacePressed();
+            console.log("true");
+        }
+    }
+
+    const active = (
         <input type={"text"}
                maxLength="1"
                minLength="1"
-               id={props.letterIndex}
-               className={props.colors[props.letterIndex]}
+               id={props.id}
+               className={props.colors[props.id]}
                onChange={handleChange}
-        readOnly={props.letterReadOnly[props.letterIndex]}></input>
-    </div>
+               onKeyDown={isBackspace}></input>
+    )
+
+    const inactive = (
+        <input type={"text"}
+               maxLength="1"
+               minLength="1"
+               id={props.id}
+               className={props.colors[props.id]}
+               onChange={handleChange}
+               onKeyDown={isBackspace} readOnly></input>
+    )
+
+
+    return (
+        <>{props.isInactive ? inactive : active}</>
 )
 }
 

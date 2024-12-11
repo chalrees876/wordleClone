@@ -4,25 +4,33 @@ import Letters from "./Letters.jsx"
 function Guesses(props) {
 
     const [guess, setGuess] = useState(["", "", "", "", ""]);
-    const [guessNumber, setGuessNumber] = useState(props.guessNumber);
+/*    const [guessNumber, setGuessNumber] = useState(props.guessNumber);*/
     const [isCorrect, setCorrect] = useState(false);
     const [colors, setColors] = useState(["grey", "grey", "grey", "grey", "grey"])
-    const [letterReadOnly, setLetterReadOnly] = useState([false, true, true, true, true]);
-    const [letterIndex, setLetterIndex] = useState(-1);
+    const [backspace, triggerBackspace] = useState(false)
 
     const letters = useMemo(
         () => Array.from({ length: 5 }, (_, i) => i),
         []
     )
 
-    function handleSubmit(event) {
+    function handleSubmit() {
         event.preventDefault();
-        setGuessNumber(guessNumber + 1);
+        checkColors(guess);
+        if(props.checkGuess(guess)) {
+            setCorrect(true);
+            props.updateWord();
+            setColors(["grey", "grey", "grey", "grey", "grey"]);
+        }
+
+    }
+
+    function checkColors(guess) {
         let newColors = colors;
         for ( let i = 0; i < colors.length; i++) {
             // eslint-disable-next-line react/prop-types
             console.log("guess[i]: " + guess[i]);
-            console.log(props.alphabetMap);
+            console.log("answer[i]: " + props.answer[i]);
             if (guess[i] === props.answer[i] && props.alphabetMap[guess[i]] > 0) {
                 newColors[i] = "green";
                 setColors(newColors);
@@ -35,11 +43,6 @@ function Guesses(props) {
                 props.alphabetMap[guess[c]]--;
             }
         }
-        if(props.checkGuess(guess)) {
-            setCorrect(true);
-            props.updateWord();
-            setColors(["grey", "grey", "grey", "grey", "grey"]);
-        }
     }
 
     function updateGuess(letter, i) {
@@ -48,52 +51,46 @@ function Guesses(props) {
         setGuess(newLetters);
     }
 
-    function updateReadOnly(i) {
-        if (i === 0) {
-        setLetterReadOnly([false,false,true,true,true])
-        }
-        else if (i>0 && i<4) {
-            const temp = [true, true, true, true, true];
-            temp[i] = false;
-            temp[i+1] = false;
-            setLetterReadOnly(temp)
+    function updateNextElement(id) {
+        const inputs = Array.from(document.querySelectorAll("input"));
+        id = id + props.guessNumber*5
+        console.log("id + props.gueesNumber*4: " + id)
+        if(!backspace) {
+            inputs[id + 1].focus();
         }
         else {
-            setLetterReadOnly([true, true, true, true, true])
+            if(id !== 0) {
+                inputs[id-1].focus();
+            }
+            else {
+                inputs[id].focus();
+            }
+            triggerBackspace(false);
         }
     }
 
-    function handleBackspace(i) {
-        if (i === 0 || i === 1 ) {
-            setLetterReadOnly([false, true, true, true, true]);
-        }
-        else if (i === 2) {
-            setLetterReadOnly([true, false, false, true, true]);
-        }
-        else if (i === 3) {
-            setLetterReadOnly([true, true, false, false, true])
-        }
+    function backspacePressed() {
+        triggerBackspace(true);
     }
 
     const startingTemplate = (
 
         <form className={"guess-container"} onSubmit={handleSubmit}>
-            <h1>{guessNumber}</h1>
+            <h1>{props.guessNumber}</h1>
             <div>
                 {letters.map(i =>
                     <Letters key={i}
                              guess={guess}
                              updateGuess={updateGuess}
                              id={i}
-                             letterIndex={letterIndex}
                              answer={props.answer}
                              colors={colors}
-                             guessNumber={guessNumber}
-                             letterReadOnly={letterReadOnly}
-                             updateReadOnly={updateReadOnly}
-                             handleBackspace={handleBackspace}/>)}
+                             guessNumber={props.guessNumber}
+                             updateNextElement={updateNextElement}
+                             backspacePressed={backspacePressed}
+                             isInactive={props.isInactive}/>)}
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" id={props.id} disabled={props.isInactive}>Submit</button>
         </form>
     )
 

@@ -7,6 +7,7 @@ function App(props) {
     const[answers, setAnswers] = useState([]);
     const [answer, setAnswer] = useState("");
     const [guessNumber, setGuessNumber] = useState(0);
+    const [isInactive, setInactive] = useState(true);
 
     const alphabetMap = {};
     for (let i = 0; i < 26; ++i) {
@@ -47,6 +48,7 @@ function App(props) {
     function checkGuess(guess) {
         const guessToString = guess[0] + guess[1] + guess[2] + guess[3] + guess[4]
         setGuessNumber(guessNumber + 1);
+        updateInactive()
         return guessToString === answer;
     }
 
@@ -55,7 +57,7 @@ function App(props) {
         []
     )
 
-  return (
+    return (
     <>
         {answer}
         {guesses.map(i =>
@@ -67,7 +69,9 @@ function App(props) {
             alphabetMap={alphabetMap}
             key={i}
             guessNumber={guessNumber}
-            id={i}/>)}
+            id={i}
+/*            updateInactive={updateInactive}*/
+            isInactive={guessNumber!==i}/>)}
     </>
   )
 }
