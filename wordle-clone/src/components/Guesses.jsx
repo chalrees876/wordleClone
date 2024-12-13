@@ -4,10 +4,9 @@ import Letters from "./Letters.jsx"
 function Guesses(props) {
 
     const [guess, setGuess] = useState(["", "", "", "", ""]);
-/*    const [guessNumber, setGuessNumber] = useState(props.guessNumber);*/
-    const [isCorrect, setCorrect] = useState(false);
     const [colors, setColors] = useState(["grey", "grey", "grey", "grey", "grey"])
     const [backspace, triggerBackspace] = useState(false)
+    const [letterIndex, setLetterindex] = useState(0);
 
     const letters = useMemo(
         () => Array.from({ length: 5 }, (_, i) => i),
@@ -17,23 +16,28 @@ function Guesses(props) {
     function handleSubmit() {
         event.preventDefault();
         checkColors(guess);
+        console.log("in handle submit: " + colors);
         if(props.checkGuess(guess)) {
-            setCorrect(true);
+            props.updateCorrect(true);
             props.updateWord();
-            setColors(["grey", "grey", "grey", "grey", "grey"]);
         }
-
     }
+
+
 
     function checkColors(guess) {
         let newColors = colors;
+        console.log("new colors: " + newColors);
         for ( let i = 0; i < colors.length; i++) {
             // eslint-disable-next-line react/prop-types
             console.log("guess[i]: " + guess[i]);
             console.log("answer[i]: " + props.answer[i]);
+            console.log("alphabet map [i]: " + props.alphabetMap[guess[i]])
             if (guess[i] === props.answer[i] && props.alphabetMap[guess[i]] > 0) {
+                console.log("setting green")
                 newColors[i] = "green";
                 setColors(newColors);
+                console.log(newColors);
                 props.alphabetMap[guess[i]]--;
             }
         }
@@ -54,19 +58,23 @@ function Guesses(props) {
     function updateNextElement(id) {
         const inputs = Array.from(document.querySelectorAll("input"));
         id = id + props.guessNumber*5
-        console.log("id + props.gueesNumber*4: " + id)
+        console.log("id + props.guessNumber*4: " + id)
         if(!backspace) {
             inputs[id + 1].focus();
+            setLetterindex(letterIndex+1)
+            console.log("letter index: " + letterIndex)
         }
         else {
             if(id !== 0) {
                 inputs[id-1].focus();
+                setLetterindex(letterIndex-1)
+                console.log("letter index: " + letterIndex)
             }
             else {
                 inputs[id].focus();
             }
-            triggerBackspace(false);
         }
+        triggerBackspace(false);
     }
 
     function backspacePressed() {
@@ -76,13 +84,13 @@ function Guesses(props) {
     const startingTemplate = (
 
         <form className={"guess-container"} onSubmit={handleSubmit}>
-            <h1>{props.guessNumber}</h1>
             <div>
                 {letters.map(i =>
                     <Letters key={i}
                              guess={guess}
                              updateGuess={updateGuess}
                              id={i}
+                             guessFormNumber={props.id}
                              answer={props.answer}
                              colors={colors}
                              guessNumber={props.guessNumber}
@@ -94,16 +102,9 @@ function Guesses(props) {
         </form>
     )
 
-    const correctTemplate = (
-        <>
-            <h1>Congrats! you solved the puzzle</h1>
-            <button onClick={() => setCorrect(false)}>Play Again?</button>
-        </>
-    )
-
     return (
         <>
-            {isCorrect ? correctTemplate : startingTemplate}
+            {startingTemplate}
         </>
     )
 }

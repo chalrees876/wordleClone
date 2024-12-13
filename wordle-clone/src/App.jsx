@@ -7,12 +7,20 @@ function App(props) {
     const[answers, setAnswers] = useState([]);
     const [answer, setAnswer] = useState("");
     const [guessNumber, setGuessNumber] = useState(0);
-    const [isInactive, setInactive] = useState(true);
+    const [isCorrect, setCorrect] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(false);
 
     const alphabetMap = {};
     for (let i = 0; i < 26; ++i) {
         alphabetMap[String.fromCharCode(i + 97)] = 0;
     }
+
+    useEffect(() => {
+        const inputs = Array.from(document.querySelectorAll("input"));
+        if (guessNumber <= 5 && !isCorrect) {
+            inputs[guessNumber*5].focus();
+        }
+    }, [guessNumber]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +30,7 @@ function App(props) {
             setAnswers(lines);
         };
         fetchData();
-    }, []);
+    }, [refreshTrigger]);
 
     useEffect( () => {
         if (answers.length > 0) {
@@ -31,11 +39,12 @@ function App(props) {
     }, [answers]);
 
     useEffect( () => {
-        for (const c in answer) {
-            alphabetMap[answer[c]]++;
+        for (let c of answer) {
+            console.log(answer);
+            alphabetMap[c]++;
         }
         console.log(alphabetMap);
-    }, [answer]);
+    }, [guessNumber, answer]);
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
@@ -48,8 +57,11 @@ function App(props) {
     function checkGuess(guess) {
         const guessToString = guess[0] + guess[1] + guess[2] + guess[3] + guess[4]
         setGuessNumber(guessNumber + 1);
-        updateInactive()
         return guessToString === answer;
+    }
+
+    function updateCorrect(bool) {
+        setCorrect(bool);
     }
 
     const guesses = useMemo(
@@ -57,21 +69,49 @@ function App(props) {
         []
     )
 
-    return (
+    const singleAttempt = "1 attempt.";
+
+    const multAttempts = guessNumber + " attempts.";
+
+    function handleRefresh() {
+        setRefreshTrigger(!refreshTrigger)
+    }
+
+    const correctTemplate = (
+        <>
+            <h1>Congrats! You solved the puzzle in {guessNumber === 1 ? singleAttempt : multAttempts}</h1>
+            <button type={"submit"} onClick={() => {setCorrect(false); setGuessNumber(0)}}>Play Again?</button>
+        </>
+    );
+
+    const guessTemplate = (
     <>
-        {answer}
         {guesses.map(i =>
             <Guesses
-            answer={answer}
-        checkGuess={checkGuess}
-        getRandomInt={getRandomInt}
-        updateWord={updateWord}
-            alphabetMap={alphabetMap}
-            key={i}
-            guessNumber={guessNumber}
-            id={i}
-/*            updateInactive={updateInactive}*/
-            isInactive={guessNumber!==i}/>)}
+                answer={answer}
+                checkGuess={checkGuess}
+                getRandomInt={getRandomInt}
+                updateWord={updateWord}
+                alphabetMap={alphabetMap}
+                key={i}
+                guessNumber={guessNumber}
+                id={i}
+                isInactive={guessNumber!==i}
+                updateCorrect={updateCorrect}/>)}
+    </>
+    )
+
+    const gameOver = (
+        <>
+            <h1>The word was {answer}</h1>
+            <button type={"submit"} onClick={() => {handleRefresh(); setGuessNumber(0)}}>Play Again?</button>
+        </>
+    );
+
+
+    return (
+    <>
+        {isCorrect ? correctTemplate : (guessNumber < 6) ? guessTemplate : gameOver}
     </>
   )
 }

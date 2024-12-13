@@ -14,8 +14,20 @@ function Letters(props) {
         }
     }
 
+    const activeAutoFocus = (
+        <input type={"text"}
+               pattern={"^[a-zA-Z]+$"}
+               maxLength="1"
+               minLength="1"
+               id={props.id}
+               className={props.colors[props.id]}
+               onChange={handleChange}
+               onKeyDown={isBackspace} autoFocus></input>
+    )
+
     const active = (
         <input type={"text"}
+               pattern={"^[a-zA-Z]+$"}
                maxLength="1"
                minLength="1"
                id={props.id}
@@ -24,19 +36,20 @@ function Letters(props) {
                onKeyDown={isBackspace}></input>
     )
 
-    const inactive = (
+    const disabled = (
         <input type={"text"}
+               pattern={"^[a-zA-Z]+$"}
                maxLength="1"
                minLength="1"
                id={props.id}
                className={props.colors[props.id]}
                onChange={handleChange}
-               onKeyDown={isBackspace} readOnly></input>
+               onKeyDown={isBackspace} disabled={true}></input>
     )
 
 
     return (
-        <>{props.isInactive ? inactive : active}</>
+        <>{props.guessFormNumber !== props.guessNumber ?  disabled : (props.id === 0) ? activeAutoFocus : active}</>
 )
 }
 
