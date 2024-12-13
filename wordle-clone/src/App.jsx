@@ -6,6 +6,7 @@ function App(props) {
 
     const[answers, setAnswers] = useState([]);
     const [answer, setAnswer] = useState("");
+    const [validAnswers, setValidAnswers] = useState([])
     const [guessNumber, setGuessNumber] = useState(0);
     const [isCorrect, setCorrect] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(false);
@@ -29,7 +30,14 @@ function App(props) {
             const lines = text.split("\n");
             setAnswers(lines);
         };
+        let fetchData2 = async () => {
+            const response = await fetch('./public/answers.txt');
+            const text = await response.text();
+            const lines = text.split("\n");
+            setValidAnswers(lines);
+        };
         fetchData();
+        fetchData2();
     }, [refreshTrigger]);
 
     useEffect( () => {
@@ -45,6 +53,13 @@ function App(props) {
         }
         console.log(alphabetMap);
     }, [guessNumber, answer]);
+
+    function checkGuessInAnswers(guess) {
+        const guessToString = guess[0] + guess[1] + guess[2] + guess[3] + guess[4];
+        console.log("guess: " + guess);
+        console.log("validAnswers: " + validAnswers);
+        return validAnswers.includes(guessToString);
+    }
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
@@ -97,7 +112,7 @@ function App(props) {
                 guessNumber={guessNumber}
                 id={i}
                 isInactive={guessNumber!==i}
-                updateCorrect={updateCorrect}/>)}
+                updateCorrect={updateCorrect} checkGuessInAnswers={checkGuessInAnswers}/>)}
     </>
     )
 

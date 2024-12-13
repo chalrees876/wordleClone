@@ -14,13 +14,17 @@ function Guesses(props) {
     )
 
     function handleSubmit() {
-        event.preventDefault();
-        checkColors(guess);
-        console.log("in handle submit: " + colors);
-        if(props.checkGuess(guess)) {
-            props.updateCorrect(true);
-            props.updateWord();
+        if(props.checkGuessInAnswers(guess)) {
+            console.log("handle submit");
+            checkColors(guess);
+            console.log("in handle submit: " + colors);
+            if(props.checkGuess(guess)) {
+                props.updateCorrect(true);
+                props.updateWord();
+            }
         }
+        console.log("preventing default")
+        event.preventDefault();
     }
 
 
