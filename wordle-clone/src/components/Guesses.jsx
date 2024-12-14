@@ -44,11 +44,11 @@ function Guesses(props) {
                 console.log(newColors);
                 props.alphabetMap[guess[i]]--;
             }
-        }
-        for (const c in guess ) {
-            if (props.alphabetMap[guess[c]] > 0) {
-                newColors[c] = "yellow";
-                props.alphabetMap[guess[c]]--;
+            else {
+                if (props.alphabetMap[guess[i] > 0]) {
+                    newColors[i] = "yellow";
+                    props.alphabetMap[guess[i]]--;
+                }
             }
         }
     }
