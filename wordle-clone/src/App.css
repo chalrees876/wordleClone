@@ -24,3 +24,15 @@ input[type=text]:focus {
   display: inline;
 }
 
+.grey {
+  background-color: lightslategrey;
+}
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
