@@ -25,13 +25,13 @@ function App(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('./public/answers.txt');
+            const response = await fetch('/answers.txt');
             const text = await response.text();
             const lines = text.split("\n");
             setAnswers(lines);
         };
         let fetchData2 = async () => {
-            const response = await fetch('./public/answers.txt');
+            const response = await fetch('/guesses.txt');
             const text = await response.text();
             const lines = text.split("\n");
             setValidAnswers(lines);
