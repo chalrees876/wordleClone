@@ -25,13 +25,13 @@ function App(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('/answers.txt');
+            const response = await fetch('answers.txt');
             const text = await response.text();
             const lines = text.split("\n");
             setAnswers(lines);
         };
         let fetchData2 = async () => {
-            const response = await fetch('/guesses.txt');
+            const response = await fetch('guesses.txt');
             const text = await response.text();
             const lines = text.split("\n");
             setValidAnswers(lines);
@@ -56,8 +56,6 @@ function App(props) {
 
     function checkGuessInAnswers(guess) {
         const guessToString = guess[0] + guess[1] + guess[2] + guess[3] + guess[4];
-        console.log("guess: " + guess);
-        console.log("validAnswers: " + validAnswers);
         return validAnswers.includes(guessToString);
     }
 

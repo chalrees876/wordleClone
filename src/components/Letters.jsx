@@ -1,17 +1,38 @@
 
 function Letters(props) {
 
-    function handleChange(event){
+/*    function handleChange(event){
             console.log("handling change, props.id: " + props.id);
+            event.preventDefault();
             props.updateGuess(event.target.value, props.id);
             props.updateNextElement(props.id);
-    }
+            console.log("nextLetter: " + props.nextLetter);
+            console.log("props.id: " + props.id)
+    }*/
 
     function isBackspace(event) {
         if (event.key === 'Backspace') {
-            props.backspacePressed();
+            props.backspacePressed(true);
             console.log("true");
         }
+        else {
+            props.backspacePressed(false);
+            console.log("false");
+        }
+    }
+
+    function validateInput(event) {
+        const value = event.target.value;
+        if(!/^[a-zA-Z]?$/.test(value)) {
+            event.target.value = "";
+        }
+        else {
+            console.log("handling change, props.id: " + props.id);
+            event.preventDefault();
+            props.updateGuess(event.target.value, props.id);
+            props.updateNextElement(props.id);
+        }
+
     }
 
     const activeAutoFocus = (
@@ -21,8 +42,11 @@ function Letters(props) {
                minLength="1"
                id={props.id}
                className={props.colors[props.id]}
-               onChange={handleChange}
-               onKeyDown={isBackspace} autoFocus></input>
+/*               onChange={handleChange}*/
+               onKeyDown={isBackspace}
+               autoFocus
+               onInput={validateInput}
+               tabIndex={-1}></input>
     )
 
     const active = (
@@ -32,8 +56,10 @@ function Letters(props) {
                minLength="1"
                id={props.id}
                className={props.colors[props.id]}
-               onChange={handleChange}
-               onKeyDown={isBackspace}></input>
+/*               onChange={handleChange}*/
+               onKeyDown={isBackspace}
+               onInput={validateInput}
+               tabIndex={-1}></input>
     )
 
     const disabled = (
@@ -43,7 +69,7 @@ function Letters(props) {
                minLength="1"
                id={props.id}
                className={props.colors[props.id]}
-               onChange={handleChange}
+/*               onChange={handleChange}*/
                onKeyDown={isBackspace} disabled={true}></input>
     )
 

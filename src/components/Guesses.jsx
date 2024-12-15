@@ -1,4 +1,4 @@
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import Letters from "./Letters.jsx"
 
 function Guesses(props) {
@@ -7,6 +7,7 @@ function Guesses(props) {
     const [colors, setColors] = useState(["grey", "grey", "grey", "grey", "grey"])
     const [backspace, triggerBackspace] = useState(false)
     const [letterIndex, setLetterindex] = useState(0);
+    const [nextLetter, setNextLetter] = useState(letterIndex+1)
 
     const letters = useMemo(
         () => Array.from({ length: 5 }, (_, i) => i),
@@ -40,50 +41,80 @@ function Guesses(props) {
             if (guess[i] === props.answer[i] && props.alphabetMap[guess[i]] > 0) {
                 console.log("setting green")
                 newColors[i] = "green";
-                setColors(newColors);
                 console.log(newColors);
                 props.alphabetMap[guess[i]]--;
             }
-            else {
-                if (props.alphabetMap[guess[i] > 0]) {
-                    newColors[i] = "yellow";
-                    props.alphabetMap[guess[i]]--;
-                }
+        }
+        for ( let i = 0; i < colors.length; i++) {
+            if (props.alphabetMap[guess[i]] > 0 && colors[i] !== "green") {
+                console.log("setting yellow")
+                newColors[i] = "yellow";
+                props.alphabetMap[guess[i]]--;
             }
         }
+        setColors(newColors);
     }
 
     function updateGuess(letter, i) {
         const newLetters = [...guess];
         newLetters[i] = letter;
+        if(letter === "") {
+            setLetterindex(letterIndex - 1);
+            setNextLetter(nextLetter-1);
+        }
+        else {
+            setLetterindex(letterIndex+1)
+            setNextLetter(nextLetter+1);
+        }
         setGuess(newLetters);
     }
 
     function updateNextElement(id) {
         const inputs = Array.from(document.querySelectorAll("input"));
-        id = id + props.guessNumber*5
-        console.log("id + props.guessNumber*4: " + id)
-        if(!backspace) {
-            inputs[id + 1].focus();
-            setLetterindex(letterIndex+1)
-            console.log("letter index: " + letterIndex)
+        id = id + props.guessNumber * 5;
+
+        console.log("id + props.guessNumber*5: " + id);
+
+        if (!backspace) {
+            // Ensure the next element exists and is not disabled
+            if (inputs[id + 1] && !inputs[id + 1].disabled) {
+                setTimeout(() => {
+                    inputs[id + 1].focus();
+                }, 0);
+                setLetterindex(letterIndex + 1);
+                setNextLetter(nextLetter + 1);
+            }
+
         }
-        else {
-            if(id !== 0) {
+    }
+
+    function backspacePressed(bool) {
+        triggerBackspace(bool);
+    }
+
+    function updateLastElement(id) {
+        if(backspace) {
+            const inputs = Array.from(document.querySelectorAll("input"));
+            id = id + props.guessNumber*5;
+            console.log("update last element")
+            console.log("letterIndex: " + letterIndex);
+            if (id !== 0) {
                 inputs[id-1].focus();
-                setLetterindex(letterIndex-1)
-                console.log("letter index: " + letterIndex)
+                setLetterindex(letterIndex-1);
+                setNextLetter(nextLetter-11);
             }
             else {
                 inputs[id].focus();
             }
+            triggerBackspace(false);
         }
-        triggerBackspace(false);
+        console.log("out of updatelastelement")
     }
 
-    function backspacePressed() {
-        triggerBackspace(true);
-    }
+    useEffect (() => {
+        console.log("use effect")
+        updateLastElement(letterIndex);
+    },[backspace])
 
     const startingTemplate = (
 
@@ -100,7 +131,7 @@ function Guesses(props) {
                              guessNumber={props.guessNumber}
                              updateNextElement={updateNextElement}
                              backspacePressed={backspacePressed}
-                             isInactive={props.isInactive}/>)}
+                             isInactive={props.isInactive} letterIndex={letterIndex}/>)}
             </div>
             <button type="submit" id={props.id} disabled={props.isInactive}>Submit</button>
         </form>

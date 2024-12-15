@@ -1,8 +1,8 @@
-# wordleClone
-A clone of wordle using React and Node.js
+# React + Vite
 
-# App.jsx
-creates the word that is to be guessed.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-# Guesses.jsx
-contains the react component that handles guesses from the user. checks if the guess is correct and displays a congratulatory screen with a play again button if the guess is correct.
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
